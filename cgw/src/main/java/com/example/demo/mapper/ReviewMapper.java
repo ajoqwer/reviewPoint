@@ -12,4 +12,5 @@ public interface ReviewMapper {
 	
 	public int cntPlaceReview(ReviewVO vo);
 	public int cntPlaceUserReview(ReviewVO vo);
+	public ReviewVO getPreReview(ReviewVO vo);
 }
