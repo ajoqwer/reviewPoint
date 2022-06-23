@@ -41,6 +41,7 @@ public class ReviewService {
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
+			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
 			pointHistMapper.addPointHist(vo);
 			// 포인트 관련구간 끝
 		} catch (Exception e) {
@@ -76,6 +77,7 @@ public class ReviewService {
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
+			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
 			pointHistMapper.addPointHist(vo);
 			// 포인트 관련구간 끝
 		} catch (Exception e) {
@@ -106,6 +108,7 @@ public class ReviewService {
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
+			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
 			pointHistMapper.addPointHist(vo);
 			// 포인트 관련구간 끝
 		} catch (Exception e) {
