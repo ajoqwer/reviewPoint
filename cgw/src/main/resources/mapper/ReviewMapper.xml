@@ -6,9 +6,9 @@
 
 	<insert id="addReview" parameterType="ReviewVO">
 		insert into review 
-		(userId,	placeId,	reviewId,	content,	attachedPhotoIds,	regDate)
+		(userId,	placeId,	reviewId,	content,	attachedPhotoId,	regDate)
 		values 
-		(#{userId}, #{placeId}, #{reviewId}, #{content}, #{attachedPhotoIds}, now())
+		(#{userId}, #{placeId}, #{reviewId}, #{content}, #{attachedPhotoId}, now())
 	</insert>
 	
 	
@@ -16,7 +16,7 @@
 		update review
 		set 
 		 content = #{content},
-		 attachedPhotoIds = #{attachedPhotoIds},
+		 attachedPhotoId = #{attachedPhotoId},
 		 modDate = now()
 		where
 		 reviewId = #{reviewId}
@@ -42,7 +42,7 @@
 	<select id="getPreReview" parameterType="ReviewVO" resultType="ReviewVO">
 		select
 		 content,
-		 attachedPhotoIds
+		 attachedPhotoId
 		from review
 		where
 		 userId = #{userId}

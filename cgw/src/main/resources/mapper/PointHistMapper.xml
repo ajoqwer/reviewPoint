@@ -16,9 +16,9 @@
 	
 	<insert id="addPointHist" parameterType="ReviewVO">
 		insert into pointhst
-		(userId, point, regType, regAction, register)
+		(userId, point, type, action, register)
 		values
-		(#{userId}, #{point}, #{regType}, #{regAction}, #{register})
+		(#{userId}, #{point}, #{type}, #{action}, #{reviewId})
 	</insert>
 	
 </mapper>

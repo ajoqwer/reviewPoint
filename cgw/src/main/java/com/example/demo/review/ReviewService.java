@@ -1,6 +1,8 @@
 package com.example.demo.review;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,16 +36,27 @@ public class ReviewService {
 			if(vo.getContent().length()>0) point += 1;
 			if(vo.getAttachedPhotoIds().size() >0) point += 1;
 			if(reviewMapper.cntPlaceReview(vo) == 0) point += 1;
-			//∏Æ∫‰ µÓ∑œ
+
+			String convertSt = "";
+			if(vo.getAttachedPhotoIds().size() > 0){
+				for(String str :vo.getAttachedPhotoIds()) {
+					convertSt += str +",";
+				}
+			}				
+			vo.setAttachedPhotoId(convertSt);
+
 			reviewMapper.addReview(vo);
-			// ∆˜¿Œ∆Æ ∞¸∑√±∏∞£
-			int asisPoint = pointMapper.getUserPoint(vo.getUserId());
+			int asisPoint = 0;
+			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
+			if(pointVO != null){
+				asisPoint = pointVO.getPoint();
+			}
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
 			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
 			pointHistMapper.addPointHist(vo);
-			// ∆˜¿Œ∆Æ ∞¸∑√±∏∞£ ≥°
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
@@ -65,21 +78,35 @@ public class ReviewService {
 		}
 		try {
 			ReviewVO preReview = reviewMapper.getPreReview(vo);
-			
+			String[] tempPhotoIds = preReview.getAttachedPhotoId().split(",");
+			List<String> attachedPhotoIds = Arrays.asList(tempPhotoIds);
+			preReview.setAttachedPhotoIds(attachedPhotoIds);
+
 			if(preReview.getContent().length() == 0 && vo.getContent().length() > 0) point += 1;
 			if(preReview.getContent().length() > 0 && vo.getContent().length() == 0) point -= 1;
 			if(preReview.getAttachedPhotoIds().size() == 0 && vo.getAttachedPhotoIds().size() > 0) point += 1;
 			if(preReview.getAttachedPhotoIds().size() > 0 && vo.getAttachedPhotoIds().size() == 0) point -= 1;
-			//∏Æ∫‰ ºˆ¡§
+			
+			String convertSt = "";
+			if(vo.getAttachedPhotoIds().size() > 0){
+				for(String str :vo.getAttachedPhotoIds()) {
+					convertSt += str;
+				}
+			}				
+			vo.setAttachedPhotoId(convertSt);
 			reviewMapper.modReview(vo);
-			// ∆˜¿Œ∆Æ ∞¸∑√±∏∞£
-			int asisPoint = pointMapper.getUserPoint(vo.getUserId());
+		
+			int asisPoint = 0;
+			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
+			if(pointVO != null){
+				asisPoint = pointVO.getPoint();
+			}
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
-			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
 			pointHistMapper.addPointHist(vo);
-			// ∆˜¿Œ∆Æ ∞¸∑√±∏∞£ ≥°
+			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()).getPoint());
+			System.out.println("Ïú†Ï†ÄÌè¨Ïù∏Ìä∏ ÌôïÏù∏ : " +resultMap.get("userPoint"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
@@ -103,14 +130,18 @@ public class ReviewService {
 		try {
 			point -= pointHistMapper.getPlaceUserPoint(vo);
 			reviewMapper.deleteReview(vo);
-			// ∆˜¿Œ∆Æ ∞¸∑√±∏∞£
-			int asisPoint = pointMapper.getUserPoint(vo.getUserId());
+			
+			int asisPoint = 0;
+			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
+			if(pointVO != null){
+				asisPoint = pointVO.getPoint();
+			}
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
 			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
 			pointHistMapper.addPointHist(vo);
-			// ∆˜¿Œ∆Æ ∞¸∑√±∏∞£ ≥°
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
@@ -125,8 +156,8 @@ public class ReviewService {
 	
 	
 	boolean pkNullCheck(ReviewVO vo) {
-		boolean checker = true;
-		if(vo.getUserId() == null || vo.getPlaceId() == null || vo.getReviewId() == null) checker = false;
+		boolean checker = false;
+		if(vo.getUserId() == null || vo.getPlaceId() == null || vo.getReviewId() == null) checker = true;
 		return  checker;
 	}
 

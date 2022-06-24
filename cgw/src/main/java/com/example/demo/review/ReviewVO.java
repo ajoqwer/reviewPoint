@@ -11,7 +11,10 @@ public class ReviewVO {
 	String userId;
 	String placeId;
 	List<String> attachedPhotoIds;
+	String attachedPhotoId;
 	String content;
 	int point;
-	
+	String type;
+	String action;
 }
+

@@ -1,12 +1,11 @@
 package com.example.demo.review;
 
-import java.util.Arrays;
 import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,22 +20,19 @@ public class ReviewController {
 	
 	@RequestMapping(value="/events",method=RequestMethod.POST)
 	@ResponseBody
-	public HashMap<String,Object> getEvent(HttpServletRequest request){
+	public HashMap<String,Object> getEvent(@RequestBody ReviewVO vo){
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
-		String type = request.getParameter("type");
-		String action = request.getParameter("action");
-		
-		switch(type) {
+		switch(vo.getType()) {
 			case Static.TYPE_REVIEW :
-				switch(action) {
+				switch(vo.getAction()) {
 					case Static.ACTION_ADD :
-						resultMap = addReview(request);
+						resultMap = addReview(vo);
 						break;
 					case Static.ACTION_MOD :
-						resultMap = modReview(request);
+						resultMap = modReview(vo);
 						break;
 					case Static.ACTION_DELETE :
-						resultMap = deleteReview(request);
+						resultMap = deleteReview(vo);
 						break;
 					default : 
 						resultMap.put("resultCode", Static.RESULT_ERROR_PARAM);
@@ -47,32 +43,20 @@ public class ReviewController {
 		return resultMap;
 	}
 	
-	public HashMap<String,Object> addReview(HttpServletRequest request) {
+	public HashMap<String,Object> addReview(ReviewVO vo) {
 		
-		ReviewVO vo = requestMapping(request);
 		HashMap<String,Object> resultMap = reviewService.addReview(vo);
 		return resultMap;
 	}
-	public HashMap<String,Object> modReview(HttpServletRequest request) {
+	public HashMap<String,Object> modReview(ReviewVO vo) {
 		
-		ReviewVO vo = requestMapping(request);
 		HashMap<String,Object> resultMap = reviewService.modReview(vo);
 		return resultMap;
 	}
-	public HashMap<String,Object> deleteReview(HttpServletRequest request) {
+	public HashMap<String,Object> deleteReview(ReviewVO vo) {
 		 
-		ReviewVO vo = requestMapping(request);
 		HashMap<String,Object> resultMap =reviewService.deleteReview(vo);
 		return resultMap;
 	}
 	
-	ReviewVO requestMapping(HttpServletRequest request) {
-		ReviewVO vo = new ReviewVO();
-		vo.setUserId(request.getParameter("userId"));
-		vo.setPlaceId(request.getParameter("placeId"));
-		vo.setReviewId(request.getParameter("reviewId"));
-		vo.setContent(request.getParameter("content"));
-		vo.setAttachedPhotoIds(Arrays.asList(request.getParameter("attachedPhotoIds")));
-		return vo;
-	}
 }
