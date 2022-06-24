@@ -24,7 +24,7 @@
 	
 	
 	<delete id="deleteReview" parameterType="ReviewVO">
-		delete review
+		delete from review
 		where 
 		 reviewId = #{reviewId}
 	</delete>

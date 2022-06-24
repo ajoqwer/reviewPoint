@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.common.Static;
 import com.example.demo.mapper.PointHistMapper;
@@ -24,6 +25,7 @@ public class ReviewService {
 	@Autowired
 	PointHistMapper pointHistMapper;
 	
+	@Transactional
 	public HashMap<String,Object> addReview(ReviewVO vo) {
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
 		int point = 0;
@@ -44,7 +46,8 @@ public class ReviewService {
 				}
 			}				
 			vo.setAttachedPhotoId(convertSt);
-
+			vo.setPoint(point);
+			pointHistMapper.addPointHist(vo);
 			reviewMapper.addReview(vo);
 			int asisPoint = 0;
 			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
@@ -54,9 +57,8 @@ public class ReviewService {
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
-			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
-			pointHistMapper.addPointHist(vo);
-		
+			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()).getPoint());
+			System.out.println("유저포인트 확인 : " +resultMap.get("userPoint"));	
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
@@ -68,7 +70,7 @@ public class ReviewService {
 	
 	
 	
-	
+	@Transactional
 	public HashMap<String,Object> modReview(ReviewVO vo) {
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
 		int point = 0;
@@ -95,7 +97,8 @@ public class ReviewService {
 			}				
 			vo.setAttachedPhotoId(convertSt);
 			reviewMapper.modReview(vo);
-		
+			vo.setPoint(point);
+			pointHistMapper.addPointHist(vo);
 			int asisPoint = 0;
 			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
 			if(pointVO != null){
@@ -104,9 +107,8 @@ public class ReviewService {
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
-			pointHistMapper.addPointHist(vo);
+			
 			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()).getPoint());
-			System.out.println("유저포인트 확인 : " +resultMap.get("userPoint"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
@@ -119,7 +121,7 @@ public class ReviewService {
 	
 	
 	
-	
+	@Transactional
 	public HashMap<String,Object> deleteReview(ReviewVO vo) {
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
 		int point = 0;
@@ -130,7 +132,8 @@ public class ReviewService {
 		try {
 			point -= pointHistMapper.getPlaceUserPoint(vo);
 			reviewMapper.deleteReview(vo);
-			
+			vo.setPoint(point);
+			pointHistMapper.addPointHist(vo);
 			int asisPoint = 0;
 			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
 			if(pointVO != null){
@@ -139,9 +142,7 @@ public class ReviewService {
 			if(asisPoint != 0) point += asisPoint;
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
-			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()));
-			pointHistMapper.addPointHist(vo);
-			
+			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()).getPoint());				
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
@@ -160,5 +161,6 @@ public class ReviewService {
 		if(vo.getUserId() == null || vo.getPlaceId() == null || vo.getReviewId() == null) checker = true;
 		return  checker;
 	}
+
 
 }

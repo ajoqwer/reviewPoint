@@ -6,7 +6,7 @@
 
 	<select id="getUserPoint" parameterType="String" resultType="ReviewVO">
 		select 
-		 COALESCE(point,0)
+		 point
 		from point
 		where
 		 userId = #{userId}
