@@ -2,6 +2,7 @@
 테스트방법
 
 =============================== *REST Client 용   test.http 데이터 예시입니다.
+
 POST http://localhost:8080/events HTTP/1.1
 content-type: application/json
 
