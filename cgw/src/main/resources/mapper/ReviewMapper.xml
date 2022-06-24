@@ -5,32 +5,48 @@
 <mapper namespace="com.example.demo.mapper.ReviewMapper">
 
 	<insert id="addReview" parameterType="ReviewVO">
-	
+		insert into review 
+		(userId,	placeId,	reviewId,	content,	attachedPhotoIds,	regDate)
+		values 
+		(#{userId}, #{placeId}, #{reviewId}, #{content}, #{attachedPhotoIds}, now())
 	</insert>
 	
 	
 	<update id="modReview" parameterType="ReviewVO">
-	
+		update review
+		set 
+		 content = #{content},
+		 attachedPhotoIds = #{attachedPhotoIds},
+		 modDate = now()
+		where
+		 reviewId = #{reviewId}
 	</update>
 	
 	
 	<delete id="deleteReview" parameterType="ReviewVO">
-	
+		delete review
+		where 
+		 reviewId = #{reviewId}
 	</delete>
 	
 	
 	<select id="cntPlaceReview" parameterType="ReviewVO" resultType="int">
-	
+		select 
+		 count(reviewId)
+		from review
+		where
+		 placeId = #{placeId}
 	</select>
-	
-	
-	<select id="cntPlaceUserReview" parameterType="ReviewVO" resultType="int">
-	
-	</select>
-	
+		
 	
 	<select id="getPreReview" parameterType="ReviewVO" resultType="ReviewVO">
-	
+		select
+		 content,
+		 attachedPhotoIds
+		from review
+		where
+		 userId = #{userId}
+		and placeId = #{placeId}
 	</select>
 	
 </mapper>

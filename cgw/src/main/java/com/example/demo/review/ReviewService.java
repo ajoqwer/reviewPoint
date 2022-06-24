@@ -33,7 +33,7 @@ public class ReviewService {
 		try {
 			if(vo.getContent().length()>0) point += 1;
 			if(vo.getAttachedPhotoIds().size() >0) point += 1;
-			if(reviewMapper.cntPlaceUserReview(vo) == 0) point += 1;
+			if(reviewMapper.cntPlaceReview(vo) == 0) point += 1;
 			//리뷰 등록
 			reviewMapper.addReview(vo);
 			// 포인트 관련구간

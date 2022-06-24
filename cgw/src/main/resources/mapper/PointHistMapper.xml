@@ -5,12 +5,20 @@
 <mapper namespace="com.example.demo.mapper.PointHistMapper">
 
 	<select id="getPlaceUserPoint" parameterType="ReviewVO" resultType="int">
-	
+		select
+		 sum(point)
+		from pointhst
+		where 
+		 userId = #{userId}
+		and register = #{reviewId}
 	</select>
 	
 	
 	<insert id="addPointHist" parameterType="ReviewVO">
-	
+		insert into pointhst
+		(userId, point, regType, regAction, register)
+		values
+		(#{userId}, #{point}, #{regType}, #{regAction}, #{register})
 	</insert>
 	
 </mapper>
