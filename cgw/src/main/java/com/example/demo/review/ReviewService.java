@@ -46,9 +46,9 @@ public class ReviewService {
 				}
 			}				
 			vo.setAttachedPhotoId(convertSt);
+			reviewMapper.addReview(vo);
 			vo.setPoint(point);
 			pointHistMapper.addPointHist(vo);
-			reviewMapper.addReview(vo);
 			int asisPoint = 0;
 			ReviewVO pointVO = pointMapper.getUserPoint(vo.getUserId());
 			if(pointVO != null){
@@ -58,7 +58,6 @@ public class ReviewService {
 			vo.setPoint(point);
 			pointMapper.mergePoint(vo);
 			resultMap.put("userPoint", pointMapper.getUserPoint(vo.getUserId()).getPoint());
-			System.out.println("유저포인트 확인 : " +resultMap.get("userPoint"));	
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("resultCode", Static.RESULT_ERROR_DB);
